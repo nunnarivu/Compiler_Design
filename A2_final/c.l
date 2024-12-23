@@ -30,7 +30,7 @@ extern void yyerror(const char *);  /* prints grammar violation message */
 extern int sym_type(const char *);  /* returns type from symbol table */
 
 #define sym_type(identifier) IDENTIFIER /* with no symbol table, fake it */
-
+using namespace std;
 static void comment(void);
 static int check_type(void);
 #define YY_DECL extern "C" int yylex()
@@ -86,21 +86,35 @@ static int check_type(void);
 "_Thread_local"                         { return THREAD_LOCAL; }
 "__func__"                              { return FUNC_NAME; }
 
-{L}{A}*					{ return check_type(); }
+{L}{A}*					{yylval.sval = new char[yyleng]; 
+                        for (int i=0; i<yyleng; i++)
+                        {
+                            yylval.sval[i] = yytext[i];
+                        }
+                        yylval.sval[yyleng] = '\0';
+                        return check_type(); }
 
-{HP}{H}+{IS}?				{ return I_CONSTANT; }
-{NZ}{D}*{IS}?				{ return I_CONSTANT; }
-"0"{O}*{IS}?				{ return I_CONSTANT; }
-{CP}?"'"([^'\\\n]|{ES})+"'"		{ return I_CONSTANT; }
+['].[']                     {yylval.cval = yytext[1]; return CHAR_CONSTANT;}
+{HP}{H}+{IS}?				{ yylval.ival = (int)strtol(yytext, NULL, 0); return I_CONSTANT; }
+{NZ}{D}*{IS}?				{yylval.ival = atoi(yytext); return I_CONSTANT; }
+"0"{O}*{IS}?				{yylval.ival = atoi(yytext); return I_CONSTANT; }
+{CP}?"'"([^'\\\n]|{ES})+"'"		{yylval.ival = (int)strtol(yytext, NULL, 16); return I_CONSTANT; }
 
-{D}+{E}{FS}?				{ return F_CONSTANT; }
-{D}*"."{D}+{E}?{FS}?			{ return F_CONSTANT; }
-{D}+"."{E}?{FS}?			{ return F_CONSTANT; }
-{HP}{H}+{P}{FS}?			{ return F_CONSTANT; }
-{HP}{H}*"."{H}+{P}{FS}?			{ return F_CONSTANT; }
-{HP}{H}+"."{P}{FS}?			{ return F_CONSTANT; }
+{D}+{E}{FS}?				{ yylval.ival = stof(yytext); return F_CONSTANT; }
+{D}*"."{D}+{E}?{FS}?			{yylval.ival = stof(yytext); return F_CONSTANT; }
+{D}+"."{E}?{FS}?			{yylval.ival = stof(yytext); return F_CONSTANT; }
+{HP}{H}+{P}{FS}?			{yylval.ival = stof(yytext); return F_CONSTANT; }
+{HP}{H}*"."{H}+{P}{FS}?			{yylval.ival = stof(yytext); return F_CONSTANT; }
+{HP}{H}+"."{P}{FS}?			{yylval.ival = stof(yytext); return F_CONSTANT; }
 
-({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ return STRING_LITERAL; }
+({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{//remove the " " in yytext and copy the remaining characters to sval. terminate with '\0'
+                                    yylval.sval = new char[yyleng-1]; 
+                                    for (int i=0; i<yyleng-2; i++)
+                                    {
+                                        yylval.sval[i] = yytext[i+1];
+                                    }
+                                    yylval.sval[yyleng-2] = '\0';
+                                    return STRING_LITERAL; }
 
 "..."					{ return ELLIPSIS; }
 ">>="					{ return RIGHT_ASSIGN; }

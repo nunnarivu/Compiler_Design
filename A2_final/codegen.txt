@@ -1,0 +1,16 @@
+; ModuleID = 'main_module'
+source_filename = "main_module"
+
+@string_constant = private unnamed_addr constant [15 x i8] c"hello, world\\n\00", align 1
+
+declare i32 @printf(i8*, ...)
+
+define i32 @main(i32 %0, i8** %1) {
+entry:
+  %argc = alloca i32
+  store i32 %0, i32* %argc
+  %argv = alloca i8**
+  store i8** %1, i8*** %argv
+  %_func_call_args_ = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([15 x i8], [15 x i8]* @string_constant, i32 0, i32 0))
+  ret i32 0
+}

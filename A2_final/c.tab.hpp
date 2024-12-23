@@ -43,91 +43,112 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+#line 1 "c.y"
+
+	#include <iostream>
+	#include "asttree.hpp"
+
+#line 53 "c.tab.hpp"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    IDENTIFIER = 258,
-    I_CONSTANT = 259,
-    F_CONSTANT = 260,
-    STRING_LITERAL = 261,
-    FUNC_NAME = 262,
-    SIZEOF = 263,
-    PTR_OP = 264,
-    INC_OP = 265,
-    DEC_OP = 266,
-    LEFT_OP = 267,
-    RIGHT_OP = 268,
-    LE_OP = 269,
-    GE_OP = 270,
-    EQ_OP = 271,
-    NE_OP = 272,
-    AND_OP = 273,
-    OR_OP = 274,
-    MUL_ASSIGN = 275,
-    DIV_ASSIGN = 276,
-    MOD_ASSIGN = 277,
-    ADD_ASSIGN = 278,
-    SUB_ASSIGN = 279,
-    LEFT_ASSIGN = 280,
-    RIGHT_ASSIGN = 281,
-    AND_ASSIGN = 282,
-    XOR_ASSIGN = 283,
-    OR_ASSIGN = 284,
-    TYPEDEF_NAME = 285,
-    ENUMERATION_CONSTANT = 286,
-    TYPEDEF = 287,
-    EXTERN = 288,
-    STATIC = 289,
-    AUTO = 290,
-    REGISTER = 291,
-    INLINE = 292,
-    CONST = 293,
-    RESTRICT = 294,
-    VOLATILE = 295,
-    BOOL = 296,
-    CHAR = 297,
-    SHORT = 298,
-    INT = 299,
-    LONG = 300,
-    SIGNED = 301,
-    UNSIGNED = 302,
-    FLOAT = 303,
-    DOUBLE = 304,
-    VOID = 305,
-    COMPLEX = 306,
-    IMAGINARY = 307,
-    STRUCT = 308,
-    UNION = 309,
-    ENUM = 310,
-    ELLIPSIS = 311,
-    CASE = 312,
-    DEFAULT = 313,
-    IF = 314,
-    ELSE = 315,
-    SWITCH = 316,
-    WHILE = 317,
-    DO = 318,
-    FOR = 319,
-    GOTO = 320,
-    CONTINUE = 321,
-    BREAK = 322,
-    RETURN = 323,
-    ALIGNAS = 324,
-    ALIGNOF = 325,
-    ATOMIC = 326,
-    GENERIC = 327,
-    NORETURN = 328,
-    STATIC_ASSERT = 329,
-    THREAD_LOCAL = 330
+    CHAR_CONSTANT = 258,
+    IDENTIFIER = 259,
+    STRING_LITERAL = 260,
+    I_CONSTANT = 261,
+    F_CONSTANT = 262,
+    FUNC_NAME = 263,
+    SIZEOF = 264,
+    PTR_OP = 265,
+    INC_OP = 266,
+    DEC_OP = 267,
+    LEFT_OP = 268,
+    RIGHT_OP = 269,
+    LE_OP = 270,
+    GE_OP = 271,
+    EQ_OP = 272,
+    NE_OP = 273,
+    AND_OP = 274,
+    OR_OP = 275,
+    MUL_ASSIGN = 276,
+    DIV_ASSIGN = 277,
+    MOD_ASSIGN = 278,
+    ADD_ASSIGN = 279,
+    SUB_ASSIGN = 280,
+    LEFT_ASSIGN = 281,
+    RIGHT_ASSIGN = 282,
+    AND_ASSIGN = 283,
+    XOR_ASSIGN = 284,
+    OR_ASSIGN = 285,
+    TYPEDEF_NAME = 286,
+    ENUMERATION_CONSTANT = 287,
+    TYPEDEF = 288,
+    EXTERN = 289,
+    STATIC = 290,
+    AUTO = 291,
+    REGISTER = 292,
+    INLINE = 293,
+    CONST = 294,
+    RESTRICT = 295,
+    VOLATILE = 296,
+    BOOL = 297,
+    CHAR = 298,
+    SHORT = 299,
+    INT = 300,
+    LONG = 301,
+    SIGNED = 302,
+    UNSIGNED = 303,
+    FLOAT = 304,
+    DOUBLE = 305,
+    VOID = 306,
+    COMPLEX = 307,
+    IMAGINARY = 308,
+    STRUCT = 309,
+    UNION = 310,
+    ENUM = 311,
+    ELLIPSIS = 312,
+    CASE = 313,
+    DEFAULT = 314,
+    IF = 315,
+    ELSE = 316,
+    SWITCH = 317,
+    WHILE = 318,
+    DO = 319,
+    FOR = 320,
+    GOTO = 321,
+    CONTINUE = 322,
+    BREAK = 323,
+    RETURN = 324,
+    ALIGNAS = 325,
+    ALIGNOF = 326,
+    ATOMIC = 327,
+    GENERIC = 328,
+    NORETURN = 329,
+    STATIC_ASSERT = 330,
+    THREAD_LOCAL = 331
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 21 "c.y"
+
+	ASTNode* node;
+	int ival;
+	float fval;
+	char* sval;
+	char cval;
+
+#line 149 "c.tab.hpp"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
